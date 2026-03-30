@@ -5,6 +5,10 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded());
-app.get("/",  async (req, res) => {
+app.get("/", (req, res) => {
     res.render("home"); 
 })
+app.listen(PORT, () => {
+    console.log("espress running on pork:" + PORT);
+    console.log("http://localhost:" + PORT);
+}); 
