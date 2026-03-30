@@ -1,0 +1,13 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./FrontEnd
+      dockerfile: Dockerfile
+    networks:
+      - localprom
+networks:
+  localprom:
+    driver: bridge
+volumes:
+  db_data:
