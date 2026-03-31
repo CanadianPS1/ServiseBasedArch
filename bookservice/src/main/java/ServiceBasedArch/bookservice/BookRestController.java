@@ -14,6 +14,9 @@ public class BookRestController{
     @GetMapping(path = "")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Book> findAllBooks(){return bookRepository.findAll();}
+    @GetMapping(path = "/{bookGuid}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Book getBook(@PathVariable UUID bookGuid){return bookRepository.findById(bookGuid).orElseThrow(() -> new NoSuchElementException());}
     @GetMapping(path = "test")
     @ResponseStatus(code = HttpStatus.OK)
     public String test(){return "hello world";}
