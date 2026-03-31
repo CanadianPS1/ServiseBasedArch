@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.get("/", (req, res) => {
     res.render("home"); 
-})
+});
 app.listen(PORT, () => {
     console.log("espress running on pork:" + PORT);
     console.log("http://localhost:" + PORT);
