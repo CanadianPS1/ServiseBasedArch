@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("FrontEnd", "Main");
+    engine.loadFromModule("DoorLeap", "Main");
 
     return app.exec();
 }

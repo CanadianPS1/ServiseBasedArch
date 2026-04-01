@@ -1,13 +1,52 @@
 services:
-  frontend:
-    container_name: frontend
-    build:
-      context: ./FrontEnd
-      dockerfile: Dockerfile
+  mariadb:
+    image: mariadb:latest
+    container_name: accounts
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: accounts
+      MYSQL_USER: user
+      MYSQL_PASSWORD: abc
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./my.conf:/etc/mysql/conf.d/my.cnf
     networks:
       - localprom
+  zookeeper:
+      image: confluentinc/cp-zookeeper:7.6.0
+      container_name: zookeeper
+      ports:
+        - "2181:2181"
+      environment:
+        ZOOKEEPER_CLIENT_PORT: 2181
+        ZOOKEEPER_TICK_TIME: 2000
+      networks:
+        - localprom
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - localprom
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/9092"]
+      interval: 5s
+      retries: 20
 networks:
   localprom:
     driver: bridge
 volumes:
   db_data:
+  
