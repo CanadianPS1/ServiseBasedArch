@@ -1,9 +1,10 @@
 #include <iostream>
 #include "nlohmann/json.hpp"
+#include <hiredis/hiredis.h>
 class Basket{
     public:
     Basket();
-    static void RedisConnect();
+    static redisContext* RedisConnect();
     static void KafkaConnect();
     static void AddToBasket();
     static nlohmann::json GetBasketById(int id);

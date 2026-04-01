@@ -1,19 +1,15 @@
 services:
-  basket:
-    container_name: basket
-    build:
-      context: ./Basket
-      dockerfile: Dockerfile
-    networks:
-      - localprom
-  cache:
+  redis:
+    container_name: cashe
     image: redis:6.2-alpine
     restart: always
     ports:
       - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     volumes: 
-      - cache:/data
+      - redis:/data
+    networks:
+      - localprom
   mariadb:
     image: mariadb:latest
     container_name: accounts
@@ -30,15 +26,15 @@ services:
     networks:
       - localprom
   zookeeper:
-      image: confluentinc/cp-zookeeper:7.6.0
-      container_name: zookeeper
-      ports:
-        - "2181:2181"
-      environment:
-        ZOOKEEPER_CLIENT_PORT: 2181
-        ZOOKEEPER_TICK_TIME: 2000
-      networks:
-        - localprom
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - localprom
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     container_name: kafka
@@ -56,14 +52,24 @@ services:
     networks:
       - localprom
     healthcheck:
-      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/9092"]
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/kafka/9092"]
       interval: 5s
       retries: 20
+  basket:
+    container_name: basket
+    build:
+      context: ./Basket
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - kafka
+    networks:
+      - localprom
 networks:
   localprom:
     driver: bridge
 volumes:
   db_data:
-  cache:
+  redis:
     driver: local
   

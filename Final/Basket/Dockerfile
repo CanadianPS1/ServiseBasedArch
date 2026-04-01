@@ -1,8 +1,10 @@
 FROM gcc:13
+ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
 RUN apt-get update && apt-get install -y \
     libboost-system-dev \
     libboost-thread-dev \
+    libhiredis-dev \
     ca-certificates \
     git \
     cmake \
@@ -30,6 +32,7 @@ RUN g++ -std=c++20 \
     Main.c++ \
     Basket.c++ \
     -I/usr/include \
+    -lhiredis \
     -I/usr/include/boost \
     -I/usr/local/include/librdkafka \
     -L/usr/lib/x86_64-linux-gnu \
@@ -39,5 +42,5 @@ RUN g++ -std=c++20 \
     -lpthread \
     -lrdkafka \
     -o Basket
-EXPOSE 9256
+EXPOSE 9092
 CMD ["./Basket"]
