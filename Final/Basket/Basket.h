@@ -4,6 +4,7 @@
 class Basket{
     public:
     Basket();
+    static int id;
     static redisContext* RedisConnect();
     static void KafkaConnect();
     static void AddToBasket(std::string msg);
