@@ -41,11 +41,17 @@ void Basket::KafkaConnect(){
             rd_kafka_message_destroy(msg);
             continue;
         }
-        //TODO write kafka message logic
+        std::string message = to_string(msg);
+        if(message.compare("add") == 0) AddToBasket(message);
+        else if(message.compare(0,4, "get1") == 0) GetBasketById(message);
+        else if(message.compare("get") == 0) GetBasket();
+        else if(message.compare(0, 7, "delete1") == 0) DeleteItem(message);
+        else if(message.compare("delete") == 0) DeleteAllItems();
+        else std::cerr<<"WHAT THE HECK"<<std::endl;
         rd_kafka_message_destroy(msg);
     }
 }
-void Basket::AddToBasket(){
+void Basket::AddToBasket(std::string msg){
 
 }
 nlohmann::json Basket::GetBasketById(int id){
