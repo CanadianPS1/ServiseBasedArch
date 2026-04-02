@@ -4,6 +4,8 @@
 #include "nlohmann/json.hpp"
 #include <hiredis/hiredis.h>
 #include <rdkafka.h>
+#include <bits/stdc++.h>
+int Basket::id;
 Basket::Basket(){
     RedisConnect();
     KafkaConnect();
@@ -61,20 +63,19 @@ void Basket::AddToBasket(std::string msg){
     redisContext* context = RedisConnect();
     nlohmann::json Item = {{resterant},{item},{std::to_string(cost)}};
     std::string ItemString = Item.dump();
-    std::tring query = "SET " + std::to_string(Basket::id) + " %s";
-    redisReply* reply = (redisReply*)redisCommand(context, "SET ", std::to_string(Basket::id), " %s", ItemString);
-    Basket::id++;
+    redisReply* reply = (redisReply*)redisCommand(context, "SET %d %s", id, ItemString.c_str());
+    id++;
     freeReplyObject(reply);
     redisFree(context);
 }
 nlohmann::json Basket::GetBasketById(int id){
     redisContext* context = RedisConnect();
-    std::string query = "GET " + std::to_string(id);
-    redisReply* reply = (redisReply*)redisCommand(context, "GET ", std::to_string(id));
+    nlohmann::json result;
+    redisReply* reply = (redisReply*)redisCommand(context, "GET %s", id);
     if(reply->type == REDIS_REPLY_STRING){
+        result = nlohmann::json::parse(reply->str);;
         std::cout<<"Stored string in Redis: "<<reply->str<<std::endl;
     }else std::cout<<"Failed to retrieve the value."<<std::endl;
-    nlohmann::json result;
     freeReplyObject(reply);
     redisFree(context);
     return result; 
@@ -82,12 +83,11 @@ nlohmann::json Basket::GetBasketById(int id){
 nlohmann::json Basket::GetBasket(){
     nlohmann::json result;
     redisContext* context = RedisConnect();
-    std::map<std::string, std::string> json;
-    for(int i = 0; i < Basket::id; i++){
-        std::string query = "GET " + std::to_string(i);
-        redisReply* reply = (redisReply*)redisCommand(context, "GET ", std::to_string(i));
+    std::map<int, std::string> json;
+    for(int i = 0; i < id; i++){
+        redisReply* reply = (redisReply*)redisCommand(context, "GET %s", id);
         if(reply->type == REDIS_REPLY_STRING){
-            json.at(reply->str.key) = reply->str.value;
+            json.insert({i, reply->str});
             std::cout<<"Stored string in Redis: "<<reply->str<<std::endl;
         }else std::cout<<"Failed to retrieve the value."<<std::endl;
         freeReplyObject(reply);
@@ -96,8 +96,22 @@ nlohmann::json Basket::GetBasket(){
     return result; 
 }
 void Basket::DeleteItem(int id){
-
+    redisContext* context = RedisConnect();
+    redisReply* reply = (redisReply*)redisCommand(context, "DEL %s", id);
+    if(reply->type == REDIS_REPLY_STRING) std::cout<<"Deleted"<<reply->str<<std::endl;
+    else std::cout<<"Failed to retrieve the value."<<std::endl;
+    freeReplyObject(reply);
+    redisFree(context);
 }
 void Basket::DeleteAllItems(){
-
+    nlohmann::json result;
+    redisContext* context = RedisConnect();
+    for(int i = 0; i < id; i++){
+        redisReply* reply = (redisReply*)redisCommand(context, "DEL %s", id);
+        if(reply->type == REDIS_REPLY_STRING) std::cout<<"Deleted: "<<reply->str<<std::endl;
+        else std::cout<<"Failed to retrieve the value."<<std::endl;
+        freeReplyObject(reply);
+    }
+    id = 0;
+    redisFree(context);
 }
