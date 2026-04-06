@@ -65,6 +65,16 @@ services:
       - kafka
     networks:
       - localprom
+  # doorleap:
+  #   container_name: doorleap
+  #   build:
+  #     context: ./DoorLeap
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - mariadb
+  #     - kafka
+  #   networks:
+  #     - localprom
 networks:
   localprom:
     driver: bridge

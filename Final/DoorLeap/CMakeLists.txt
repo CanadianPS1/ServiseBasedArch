@@ -1,41 +1,44 @@
-cmake_minimum_required(VERSION 3.16)
 
-project(DoorLeap VERSION 0.1 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.21.1)
 
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+option(LINK_INSIGHT "Link Qt Insight Tracker library" ON)
+option(BUILD_QDS_COMPONENTS "Build design studio components" ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
+project(DoorLeapApp LANGUAGES CXX)
 
-qt_standard_project_setup(REQUIRES 6.8)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-qt_add_executable(appDoorLeap
-    main.cpp
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/qml)
+set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
+    CACHE STRING "Import paths for Qt Creator's code model"
+    FORCE
 )
 
-qt_add_qml_module(appDoorLeap
-    URI DoorLeap
-    QML_FILES
-        Main.qml
-)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Qml Quick QuickTimeline ShaderTools)
+qt_standard_project_setup()
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-set_target_properties(appDoorLeap PROPERTIES
-#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appDoorLeap
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
-)
 
-target_link_libraries(appDoorLeap
-    PRIVATE Qt6::Quick
-)
+qt_add_executable(${CMAKE_PROJECT_NAME})
+qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
+    PREFIX "/"
+    FILES
+        qtquickcontrols2.conf)
+
+include(qds)
+
+if (BUILD_QDS_COMPONENTS)
+    include(qmlcomponents OPTIONAL)
+endif()
+
+if (LINK_INSIGHT)
+    include(insight OPTIONAL)
+endif ()
 
 include(GNUInstallDirs)
-install(TARGETS appDoorLeap
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+install(TARGETS ${CMAKE_PROJECT_NAME}
+  BUNDLE DESTINATION .
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
