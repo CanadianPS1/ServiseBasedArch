@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/DoorLeap/">
+    <file alias="Main.qml">C:/Users/Lillia/Documents/GitHub/ServiseBasedArch/Final/DoorLeap/Main.qml</file>
+  </qresource>
+</RCC>
+

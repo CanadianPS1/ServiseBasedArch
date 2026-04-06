@@ -1,0 +1,14 @@
+-rootPath
+C:/Users/Lillia/Documents/GitHub/ServiseBasedArch/Final/DoorLeap
+-cmake-output
+-output-file
+C:/Users/Lillia/Documents/GitHub/ServiseBasedArch/Final/DoorLeap/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/.qt/qml_imports/appDoorLeap_build.cmake
+-importPath
+C:/Users/Lillia/Documents/GitHub/ServiseBasedArch/Final/DoorLeap/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/DoorLeap
+-importPath
+C:/Users/Lillia/Documents/GitHub/ServiseBasedArch/Final/DoorLeap/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug
+-importPath
+C:/Qt/6.10.1/mingw_64/qml
+-qrcFiles
+C:/Users/Lillia/Documents/GitHub/ServiseBasedArch/Final/DoorLeap/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/.qt/rcc/qmake_DoorLeap.qrc
+C:/Users/Lillia/Documents/GitHub/ServiseBasedArch/Final/DoorLeap/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/.qt/rcc/appDoorLeap_raw_qml_0.qrc

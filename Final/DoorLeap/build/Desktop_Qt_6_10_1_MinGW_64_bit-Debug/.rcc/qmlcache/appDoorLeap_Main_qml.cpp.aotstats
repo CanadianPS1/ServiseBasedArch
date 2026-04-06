@@ -1,0 +1,39 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                        {
+                            "codegenResult": 0,
+                            "column": 17,
+                            "durationMicroseconds": 384,
+                            "functionName": "visibility",
+                            "line": 5,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 13,
+                            "durationMicroseconds": 417,
+                            "functionName": "color",
+                            "line": 6,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 17,
+                            "durationMicroseconds": 207,
+                            "functionName": "color",
+                            "line": 10,
+                            "message": "method rgba cannot be resolved."
+                        }
+                    ],
+                    "filePath": "C:/Users/Lillia/Documents/GitHub/ServiseBasedArch/Final/DoorLeap/Main.qml"
+                }
+            ],
+            "moduleId": "DoorLeap(appDoorLeap)"
+        }
+    ]
+}

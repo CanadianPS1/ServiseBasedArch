@@ -1,0 +1,6 @@
+module DoorLeap
+typeinfo appDoorLeap.qmltypes
+prefer :/qt/qml/DoorLeap/
+Main 254.0 Main.qml
+depends QtQuick
+
