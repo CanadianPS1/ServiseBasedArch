@@ -65,16 +65,31 @@ services:
       - kafka
     networks:
       - localprom
-  # doorleap:
-  #   container_name: doorleap
-  #   build:
-  #     context: ./DoorLeap
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - mariadb
-  #     - kafka
-  #   networks:
-  #     - localprom
+  doorleap:
+    container_name: doorleap
+    build:
+      context: ./DoorLeap
+      dockerfile: Dockerfile
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_QPA_PLATFORM=xcb  
+    ports:
+      - "5901:5901"
+      - "6080:6080"
+    depends_on:
+      - kafka
+    networks:
+      - localprom
+  account:
+    container_name: account
+    build:
+      context: ./Account
+      dockerfile: Dockerfile
+    depends_on:
+      - mariadb
+      - kafka
+    networks:
+      - localprom
 networks:
   localprom:
     driver: bridge
@@ -82,4 +97,3 @@ volumes:
   db_data:
   redis:
     driver: local
-  

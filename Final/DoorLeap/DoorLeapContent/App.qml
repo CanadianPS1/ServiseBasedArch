@@ -1,5 +1,5 @@
-import QtQuick
-import DoorLeap
+import QtQuick 2.15
+import DoorLeap 1.0
 
 Window {
     width: mainScreen.width
@@ -10,9 +10,6 @@ Window {
 
     Screen01 {
         id: mainScreen
-
         anchors.centerIn: parent
     }
-
 }
-

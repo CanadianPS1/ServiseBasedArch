@@ -9,7 +9,7 @@
 #include <memory>
 #include <string>
 #include <thread>
-#include "Basket.h"
+#include "Account.h"
 #include <optional>
 #include <vector>
 #include <algorithm>
@@ -21,70 +21,6 @@ using tcp = net::ip::tcp;
 using std::vector;
 using std::find;
 http::response<http::string_body> handle_request(http::request<http::string_body> const& req){
-    //get by id
-    if(req.method() == http::verb::get && req.target().starts_with("/basket/")){
-        std::string target = std::string(req.target());
-        target = target.substr(0, target.find('?'));
-        if(!target.empty() && target.back() == '/') target.pop_back();
-        int userId = std::stoi(target.substr(target.find_last_of('/') + 1));
-        nlohmann::json json_response = {{"message", Basket::GetBasketById(userId)},
-                                        {"URL", "http://www.localhost:9256/games/trade/"}};
-        http::response<http::string_body> res{http::status::ok, req.version()};
-
-        res.set(http::field::server, "Beast");
-        res.set(http::field::content_type, "application/json");
-        res.keep_alive(req.keep_alive());
-        //the response back
-        res.body() = json_response.dump();
-        res.prepare_payload();
-        return res;
-    //get all
-    }else if(req.method() == http::verb::get && req.target() == "/basket"){
-        auto basket = Basket::GetBasket();
-        for(auto it = basket.begin(); it != basket.end(); ++it){
-            auto id = it.key();
-            auto& basket = it.value();
-        }
-        nlohmann::json json_response = {{"basket", basket},
-                                        {"URL", "http://www.localhost:9256/basket/"}};
-        http::response<http::string_body> res{http::status::ok, req.version()};
-        res.set(http::field::server, "Beast");
-        res.set(http::field::content_type, "application/json");
-        res.keep_alive(req.keep_alive());
-        //the response back
-        res.body() = json_response.dump();
-        res.prepare_payload();
-        return res;
-    //for delete by id
-    }else if(req.method() == http::verb::delete_ && req.target().starts_with("/basket/")){
-        std::string target = std::string(req.target());
-        target = target.substr(0, target.find('?'));
-        if(!target.empty() && target.back() == '/') target.pop_back();
-        int id = std::stoi(target.substr(target.find_last_of('/') + 1));
-        Basket::DeleteItem(id);
-        nlohmann::json json_response = {{"message", "Item deleted"},
-                                        {"URL", "http://www.localhost:9256/basket/" + std::to_string(id)}};
-        http::response<http::string_body> res{http::status::ok, req.version()};
-        res.set(http::field::server, "Beast");
-        res.set(http::field::content_type, "application/json");
-        res.keep_alive(req.keep_alive());
-        //the response back
-        res.body() = json_response.dump();
-        res.prepare_payload();
-        return res;
-    }else if(req.method() == http::verb::delete_ && req.target() == "/basket"){
-        Basket::DeleteAllItems();
-        nlohmann::json json_response = {{"message", "Basket Cleared"},
-                                        {"URL", "http://www.localhost:9256/basket"}};
-        http::response<http::string_body> res{http::status::ok, req.version()};
-        res.set(http::field::server, "Beast");
-        res.set(http::field::content_type, "application/json");
-        res.keep_alive(req.keep_alive());
-        //the response back
-        res.body() = json_response.dump();
-        res.prepare_payload();
-        return res;
-    }
     //defalt response for an unsupported method
     return http::response<http::string_body>{http::status::bad_request, req.version()};
 }
@@ -151,9 +87,9 @@ class Listener : public std::enable_shared_from_this<Listener>{
 };
 int main(){
     try{
-        Basket basket;
+        Account account;
         auto const address = net::ip::make_address("0.0.0.0");
-        unsigned short port = 9256;
+        unsigned short port = 9257;
         net::io_context ioc{1};
         auto listener = std::make_shared<Listener>(ioc,tcp::endpoint{address,port});
         ioc.run();

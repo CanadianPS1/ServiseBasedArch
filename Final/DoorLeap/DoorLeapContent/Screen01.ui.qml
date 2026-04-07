@@ -1,21 +1,12 @@
-
-
-/*
-This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
-It is supposed to be strictly declarative and only uses a subset of QML. If you edit
-this file manually, you might introduce QML code that is not supported by Qt Design Studio.
-Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
-*/
-import QtQuick
-import QtQuick.Controls
-import DoorLeap
+import QtQuick 2.15
+import QtQuick.Controls 6.5
+import DoorLeap 1.0
 
 Rectangle {
     id: screen
     width: Constants.width
     height: Constants.height
     color: "#383737"
-
     border.width: 0
 
     Rectangle {
@@ -30,6 +21,7 @@ Rectangle {
         anchors.rightMargin: 669
         anchors.topMargin: 135
         anchors.bottomMargin: 223
+
         Text {
             id: logInText
             color: "#ffffff"
@@ -59,7 +51,6 @@ Rectangle {
             anchors.topMargin: 138
             anchors.bottomMargin: 536
             placeholderText: "Username"
-            passwordCharacter: ""
             font.pointSize: 20
         }
 
@@ -77,7 +68,6 @@ Rectangle {
             anchors.topMargin: 199
             anchors.bottomMargin: 475
             placeholderText: "Password"
-            passwordCharacter: ""
             font.pointSize: 20
             echoMode: TextInput.Password
         }
@@ -94,7 +84,6 @@ Rectangle {
             anchors.rightMargin: 248
             anchors.topMargin: 267
             anchors.bottomMargin: 403
-            checkable: false
         }
 
         Text {
@@ -142,7 +131,6 @@ Rectangle {
             anchors.topMargin: 461
             anchors.bottomMargin: 213
             placeholderText: "Username"
-            passwordCharacter: ""
             font.pointSize: 20
         }
 
@@ -159,10 +147,10 @@ Rectangle {
             anchors.topMargin: 523
             anchors.bottomMargin: 151
             placeholderText: "Password"
-            passwordCharacter: ""
             font.pointSize: 20
             echoMode: TextInput.Password
         }
+
         Button {
             id: createAccountButton
             visible: true
@@ -175,11 +163,6 @@ Rectangle {
             anchors.rightMargin: 236
             anchors.topMargin: 585
             anchors.bottomMargin: 85
-            checkable: false
-            icon.color: "#ffffff"
-            highlighted: false
-            flat: false
-            clip: false
         }
 
         Text {
@@ -198,6 +181,7 @@ Rectangle {
             font.pixelSize: 30
         }
     }
+
     states: [
         State {
             name: "clicked"
