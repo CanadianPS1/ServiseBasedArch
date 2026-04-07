@@ -1,0 +1,3 @@
+set(__QT_DEPLOY_TARGET_appDoorLeap_FILE C:/Users/Lillia/Documents/GitHub/ServiseBasedArch/Final/DoorLeap/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/appDoorLeap.exe)
+set(__QT_DEPLOY_TARGET_appDoorLeap_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_appDoorLeap_RUNTIME_DLLS C:/Qt/6.10.1/mingw_64/bin/Qt6Quick.dll;C:/Qt/6.10.1/mingw_64/bin/Qt6OpenGL.dll;C:/Qt/6.10.1/mingw_64/bin/Qt6Gui.dll;C:/Qt/6.10.1/mingw_64/bin/Qt6QmlMeta.dll;C:/Qt/6.10.1/mingw_64/bin/Qt6QmlModels.dll;C:/Qt/6.10.1/mingw_64/bin/Qt6QmlWorkerScript.dll;C:/Qt/6.10.1/mingw_64/bin/Qt6Qml.dll;C:/Qt/6.10.1/mingw_64/bin/Qt6Network.dll;C:/Qt/6.10.1/mingw_64/bin/Qt6Core.dll)
