@@ -71,8 +71,10 @@ services:
       context: ./DoorLeap
       dockerfile: Dockerfile
     environment:
-      - DISPLAY=${DISPLAY}
-      - QT_QPA_PLATFORM=xcb  
+      - DISPLAY=host.docker.internal:0
+      - QT_QPA_PLATFORM=xcb
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
     ports:
       - "5901:5901"
       - "6080:6080"

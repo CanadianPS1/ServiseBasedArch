@@ -1,6 +1,6 @@
 pragma Singleton
 import QtQuick 2.15
-import QtQuick.Studio.Application 1.0
+import QtQuick.Controls 2.15
 
 QtObject {
     readonly property int width: 1920
@@ -8,7 +8,7 @@ QtObject {
 
     property string relativeFontDirectory: "fonts"
 
-    /* Edit this comment to add your custom font */
+    /* Custom font properties */
     readonly property font font: Qt.font({
         family: Qt.application.font.family,
         pixelSize: Qt.application.font.pixelSize
@@ -20,7 +20,7 @@ QtObject {
 
     readonly property color backgroundColor: "#EAEAEA"
 
-    property StudioApplication application: StudioApplication {
-        fontPath: Qt.resolvedUrl("../DoorLeapContent/" + relativeFontDirectory)
-    }
+    // Remove StudioApplication reference
+    // If you need to handle font paths, do it manually:
+    readonly property url fontPath: Qt.resolvedUrl("../DoorLeapContent/" + relativeFontDirectory)
 }
