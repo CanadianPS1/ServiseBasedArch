@@ -84,6 +84,10 @@ Rectangle {
             anchors.rightMargin: 248
             anchors.topMargin: 267
             anchors.bottomMargin: 403
+            onClicked: {
+                mainObject.LogIn(logInUsername.text, lognPassword.text)
+            }
+            
         }
 
         Text {
@@ -163,6 +167,9 @@ Rectangle {
             anchors.rightMargin: 236
             anchors.topMargin: 585
             anchors.bottomMargin: 85
+            onClicked: {
+                mainObject.CreateAccount(createAccountUsername.text, createAccountPassword.text)
+            }
         }
 
         Text {
