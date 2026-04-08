@@ -2,8 +2,10 @@
 #include <map>
 #include "Account.h"
 #include "nlohmann/json.hpp"
+#include "jwt/include/jwt-cpp/jwt.h"
 #include <rdkafka.h>
 #include <bits/stdc++.h>
+#include <mysql.h>
 int Account::id;
 Account::Account(){
     KafkaConnect();
@@ -22,7 +24,7 @@ void Account::KafkaConnect(){
     }
     rd_kafka_poll_set_consumer(consumer);
     rd_kafka_topic_partition_list_t* topics = rd_kafka_topic_partition_list_new(2);
-    rd_kafka_topic_partition_list_add(topics,"account",-1);
+    rd_kafka_topic_partition_list_add(topics,"accounts",-1);
     if(rd_kafka_subscribe(consumer, topics)){
         std::cerr<<"Subscribe failed"<<std::endl;
         return;
@@ -35,14 +37,92 @@ void Account::KafkaConnect(){
             continue;
         }
         std::string message((char*)msg->payload, msg->len);
-        // if(message.compare("add") == 0) AddToBasket(message);
-        // else if(message.compare(0,4, "get1") == 0){
-        //     GetBasketById(1);
-        // }else if(message.compare("get") == 0) GetBasket();
-        // else if(message.compare(0, 7, "delete1") == 0){
-        //     DeleteItem(1);
-        // }else if(message.compare("delete") == 0) DeleteAllItems();
-        // else std::cerr<<"WHAT THE HECK"<<std::endl;
+        nlohmann::json messageJson = nlohmann::json::parse(message);
+        std::string type = messageJson.at("type");
+        if(type.compare("login") == 0) Login(messageJson, Connect());
+        else if(type.compare("create") == 0) Create(messageJson, Connect());
+        else std::cerr<<"WHAT THE HECK"<<std::endl;
         rd_kafka_message_destroy(msg);
     }
+}
+MYSQL* Account::Connect(){
+    const char* host = std::getenv("DB_HOST");
+    const char* user = std::getenv("DB_USER");
+    const char* password = std::getenv("DB_PASSWORD");
+    const char* database = std::getenv("DB_NAME");
+    MYSQL* connection = mysql_init(nullptr);
+    if(!connection){
+        std::cerr << "MySQL init error" << std::endl;
+        return nullptr;
+    }
+    const char* hostStr = host ? host : "mariadb";
+    const char* userStr = user ? user : "user";
+    const char* passwordStr = password ? password : "abc";
+    const char* dbStr = database ? database : "accounts";
+    if(!mysql_real_connect(connection, hostStr, userStr, passwordStr, dbStr, 3306, nullptr, 0)){
+        std::cerr << "MySQL connection error: " << mysql_error(connection) << std::endl;
+        mysql_close(connection);
+        return nullptr;
+    }
+    return connection;
+}
+void Account::Login(nlohmann::json messageJson, MYSQL* connection){
+    std::string username = messageJson.at("username");
+    std::string password = messageJson.at("password");
+    std::string query = "SELECT id, password FROM users WHERE username='" + username + "'";
+    if(mysql_query(connection, query.c_str())) {
+        std::cerr << mysql_error(connection) << std::endl;
+        return;
+    }
+    MYSQL_RES* result = mysql_store_result(connection);
+    if(!result){
+        std::cerr << "No result from query" << std::endl;
+        return;
+    }
+    MYSQL_ROW row = mysql_fetch_row(result);
+    if(row){
+        std::string dbPassword = row[1];
+        if(dbPassword == password){
+            std::cout<<"password "<<password<<" is "<<dbPassword<<std::endl;
+            std::cout << "User logged in!" << std::endl;
+        }else{
+            std::cout << "Incorrect Password" << std::endl;
+        }
+    }else{
+        std::cout << "Username not found" << std::endl;
+    }
+    mysql_free_result(result);
+    mysql_close(connection);
+}
+void Account::Create(nlohmann::json messageJson, MYSQL* connection){
+    std::string username = messageJson.at("username");
+    std::string query = "SELECT id, username FROM users WHERE username='" + username + "'";
+    if(mysql_query(connection, query.c_str())) {
+        std::cerr << mysql_error(connection) << std::endl;
+        return;
+    }
+    MYSQL_RES* result = mysql_store_result(connection);
+    MYSQL_ROW row;
+    if(mysql_fetch_row(result) == 0){
+        std::string password = messageJson.at("password");
+        std::string query = "INSERT INTO users (username, password) VALUES ('" + username + "', '" + password + "')";
+        if(mysql_query(connection, query.c_str())){
+            std::cerr<<"Insert failed: "<<mysql_error(connection)<<std::endl;
+        }else{
+            std::cout<<"User inserted successfully."<<std::endl;
+        }
+    }else{
+        std::cerr<<"username is taken"<<std::endl;
+    }
+    mysql_free_result(result);
+    mysql_close(connection);
+}
+std::string create_jwt(std::string user, const std::string& secret) {
+    auto token = jwt::create()
+        .set_issuer("DoorLeap")
+        .set_type("JWT")
+        .set_payload_claim("user_id", jwt::claim(user))
+        .set_expires_at(std::chrono::system_clock::now() + std::chrono::minutes{60})
+        .sign(jwt::algorithm::hs256{secret});
+    return token;
 }

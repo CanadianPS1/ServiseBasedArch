@@ -40,7 +40,9 @@ RUN g++ -std=c++20 \
     -lboost_thread \
     -lboost_system \
     -lpthread \
+    -lmysqlclient \
     -lrdkafka \
+    -lcrypto \
     -o Account
 EXPOSE 9092
 CMD ["./Account"]

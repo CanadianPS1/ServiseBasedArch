@@ -11,10 +11,17 @@
 #include <cryptopp/sha.h>
 #include <cryptopp/hex.h>
 #include <cryptopp/filters.h>
-
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QDebug>
+#include "main.moc"
+#include "HttpServer.h"
 int main(int argc, char *argv[]){
     set_qt_environment();
     QApplication app(argc, argv);
+    HttpServer server;
     QQmlApplicationEngine engine;
     Main mainObject;
     engine.rootContext()->setContextProperty("mainObject", &mainObject);
@@ -40,10 +47,9 @@ void Main::LogIn(const QString &username, const QString &password){
         {"password", digest}
     };
     std::string message = messageJson.dump();
-    Main::ProduceMessage(message, "account");
+    Main::ProduceMessage(message, "accounts");
 }
 void Main::CreateAccount(const QString &username, const QString &password) {
-    qDebug()<<"CreateAccount called with username:"<<username<<"password:"<<digest;
     std::string pass = password.toStdString();
     std::string use = username.toStdString();
     CryptoPP::SHA256 hash;
@@ -54,8 +60,9 @@ void Main::CreateAccount(const QString &username, const QString &password) {
         {"username", use},
         {"password", digest}
     };
+    qDebug()<<"CreateAccount called with username:"<<username<<"password:"<<digest;
     std::string message = messageJson.dump();
-    Main::ProduceMessage(message, "account");
+    Main::ProduceMessage(message, "accounts");
 }
 void Main::ProduceMessage(const std::string& message, const char* topic){
     const char* brokers = "kafka:9092";
