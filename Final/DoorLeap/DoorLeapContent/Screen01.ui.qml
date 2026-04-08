@@ -4,6 +4,7 @@ import DoorLeap 1.0
 
 Rectangle {
     id: screen
+    objectName: "screen"
     width: Constants.width
     height: Constants.height
     color: "#383737"
@@ -11,6 +12,7 @@ Rectangle {
 
     Rectangle {
         id: signIn
+        objectName: "signIn"
         color: "#7b7b7b"
         radius: 20
         anchors.left: parent.left

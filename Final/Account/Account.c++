@@ -3,13 +3,15 @@
 #include "Account.h"
 #include "nlohmann/json.hpp"
 #include "jwt/include/jwt-cpp/jwt.h"
+#include "httplib/httplib.h"
 #include <rdkafka.h>
 #include <bits/stdc++.h>
 #include <mysql.h>
-int Account::id;
+#include <boost/beast/core.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/asio.hpp>
 Account::Account(){
     KafkaConnect();
-    Account::id = 0;
 }
 void Account::KafkaConnect(){
     char errstr[512];
@@ -85,11 +87,65 @@ void Account::Login(nlohmann::json messageJson, MYSQL* connection){
         if(dbPassword == password){
             std::cout<<"password "<<password<<" is "<<dbPassword<<std::endl;
             std::cout << "User logged in!" << std::endl;
+            nlohmann::json packet = {
+                {"type", "login"},
+                {"success", "true"},
+                {"jwtToken", CreateToken(username, "grinchGrinchYellowGrinch")},
+                {"username", username},
+                {"message", "user loged in succesfuly"}
+            };
+            const std::string baseURL = "http://doorleap:9258";
+            httplib::Client client(baseURL.c_str());
+            auto res = client.Post("/logins", packet.dump(), "application/json");
+            if(res && res->status == 201) std::cerr<<"packet sent"<<std::endl;
+            else{
+                std::cerr<<"failed to send packet"<<std::endl;
+                if(res){
+                    std::cerr << "Status Code: " << res->status << std::endl;
+                    std::cerr << "Error Details: " << res->body << std::endl;
+                }
+            }
         }else{
             std::cout << "Incorrect Password" << std::endl;
+            nlohmann::json packet = {
+                {"type", "login"},
+                {"success", "false"},
+                {"jwtToken", CreateToken(username, "grinchGrinchYellowGrinch")},
+                {"username", username},
+                {"message", "user failed to log in"}
+            };
+            const std::string baseURL = "http://doorleap:9258";
+            httplib::Client client(baseURL.c_str());
+            auto res = client.Post("/logins", packet.dump(), "application/json");
+            if(res && res->status == 200) std::cerr<<"packet sent"<<std::endl;
+            else{
+                std::cerr<<"failed to send packet"<<std::endl;
+                if(res){
+                    std::cerr << "Status Code: " << res->status << std::endl;
+                    std::cerr << "Error Details: " << res->body << std::endl;
+                }
+            }
         }
     }else{
         std::cout << "Username not found" << std::endl;
+        nlohmann::json packet = {
+            {"type", "login"},
+            {"success", "false"},
+            {"jwtToken", CreateToken(username, "grinchGrinchYellowGrinch")},
+            {"username", username},
+            {"message", "user failed to log in"}
+        };
+        const std::string baseURL = "http://doorleap:9258";
+        httplib::Client client(baseURL.c_str());
+        auto res = client.Post("/logins", packet.dump(), "application/json");
+        if(res && res->status == 200) std::cerr<<"packet sent"<<std::endl;
+        else{
+            std::cerr<<"failed to send packet"<<std::endl;
+            if(res){
+                std::cerr << "Status Code: " << res->status << std::endl;
+                std::cerr << "Error Details: " << res->body << std::endl;
+            }
+        }
     }
     mysql_free_result(result);
     mysql_close(connection);
@@ -108,20 +164,74 @@ void Account::Create(nlohmann::json messageJson, MYSQL* connection){
         std::string query = "INSERT INTO users (username, password) VALUES ('" + username + "', '" + password + "')";
         if(mysql_query(connection, query.c_str())){
             std::cerr<<"Insert failed: "<<mysql_error(connection)<<std::endl;
+            nlohmann::json packet = {
+                {"type", "create"},
+                {"success", "false"},
+                {"jwtToken", CreateToken(username, "grinchGrinchYellowGrinch")},
+                {"username", username},
+                {"message", "db failed to insert"}
+            };
+            const std::string baseURL = "http://doorleap:9258";
+            httplib::Client client(baseURL.c_str());
+            auto res = client.Post("/logins", packet.dump(), "application/json");
+            if(res && res->status == 200) std::cerr<<"packet sent"<<std::endl;
+            else{
+                std::cerr<<"failed to send packet"<<std::endl;
+                if(res){
+                    std::cerr << "Status Code: " << res->status << std::endl;
+                    std::cerr << "Error Details: " << res->body << std::endl;
+                }
+            }
         }else{
             std::cout<<"User inserted successfully."<<std::endl;
+            nlohmann::json packet = {
+                {"type", "create"},
+                {"success", "true"},
+                {"jwtToken", CreateToken(username, "grinchGrinchYellowGrinch")},
+                {"username", username},
+                {"message", "user made an account"}
+            };
+            const std::string baseURL = "http://doorleap:9258";
+            httplib::Client client(baseURL.c_str());
+            auto res = client.Post("/logins", packet.dump(), "application/json");
+            if(res && res->status == 200) std::cerr<<"packet sent"<<std::endl;
+            else{
+                std::cerr<<"failed to send packet"<<std::endl;
+                if(res){
+                    std::cerr << "Status Code: " << res->status << std::endl;
+                    std::cerr << "Error Details: " << res->body << std::endl;
+                }
+            }
         }
     }else{
         std::cerr<<"username is taken"<<std::endl;
+        nlohmann::json packet = {
+            {"type", "create"},
+            {"success", "false"},
+            {"jwtToken", CreateToken(username, "grinchGrinchYellowGrinch")},
+            {"username", username},
+            {"message", "username was taken"}
+        };
+        const std::string baseURL = "http://doorleap:9258";
+        httplib::Client client(baseURL.c_str());
+        auto res = client.Post("/logins", packet.dump(), "application/json");
+        if(res && res->status == 200) std::cerr<<"packet sent"<<std::endl;
+        else{
+            std::cerr<<"failed to send packet"<<std::endl;
+            if(res){
+                std::cerr << "Status Code: " << res->status << std::endl;
+                std::cerr << "Error Details: " << res->body << std::endl;
+            }
+        }
     }
     mysql_free_result(result);
     mysql_close(connection);
 }
-std::string create_jwt(std::string user, const std::string& secret) {
+std::string Account::CreateToken(std::string user, const std::string& secret){
     auto token = jwt::create()
         .set_issuer("DoorLeap")
         .set_type("JWT")
-        .set_payload_claim("user_id", jwt::claim(user))
+        .set_payload_claim("user", jwt::claim(user))
         .set_expires_at(std::chrono::system_clock::now() + std::chrono::minutes{60})
         .sign(jwt::algorithm::hs256{secret});
     return token;

@@ -4,9 +4,9 @@
 class Account{
     public:
     Account();
-    static int id;
     static void KafkaConnect();
     static void Login(nlohmann::json messageJson, MYSQL* connection);
     static void Create(nlohmann::json messageJson, MYSQL* connection);
     static MYSQL* Connect();
+    static std::string CreateToken(std::string user, const std::string& secret);
 };

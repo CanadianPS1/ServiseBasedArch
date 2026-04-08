@@ -18,6 +18,7 @@
 #include <QDebug>
 #include "main.moc"
 #include "HttpServer.h"
+Main::QtItems Main::items;
 int main(int argc, char *argv[]){
     set_qt_environment();
     QApplication app(argc, argv);
@@ -30,7 +31,9 @@ int main(int argc, char *argv[]){
     engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
     engine.addImportPath(":/");
     engine.load(url);
+    QObject* rootObject = engine.rootObjects().first();
     if(engine.rootObjects().isEmpty()) return -1;
+    Main::items.loginMenu = rootObject->findChild<QObject*>("signIn");
     return app.exec();
 }
 Main::Main(QObject *parent) : QObject(parent) {}
@@ -89,4 +92,13 @@ void Main::ProduceMessage(const std::string& message, const char* topic){
     else std::cout << "Sent\n";
     rd_kafka_flush(producer, 5000);
     rd_kafka_destroy(producer);
+}
+void Main::HandleLogInResponse(std::string type, std::string success, std::string message, std::string username, std::string authToken){
+    if(success.compare("true") == 0){
+        std::cerr<<"login being handled"<<std::endl;
+        if(Main::items.loginMenu){
+            Main::items.loginMenu->setProperty("visible", false);
+            Main::items.loginMenu->setProperty("enabled", false);
+        }else std::cerr<<"login menu not found!!!!!"<<std::endl;
+    }
 }
