@@ -8,6 +8,7 @@ Rectangle {
     width: Constants.width
     height: Constants.height
     color: "#383737"
+    radius: 0
     border.width: 0
 
     Rectangle {
@@ -57,7 +58,7 @@ Rectangle {
         }
 
         TextField {
-            id: lognPassword
+            id: logInPassword
             objectName: "logInPassword"
             color: "#ffffff"
             text: qsTr("")
@@ -87,9 +88,8 @@ Rectangle {
             anchors.topMargin: 267
             anchors.bottomMargin: 403
             onClicked: {
-                mainObject.LogIn(logInUsername.text, lognPassword.text)
+                mainObject.LogIn(logInUsername.text, logInPassword.text)
             }
-            
         }
 
         Text {
@@ -170,7 +170,8 @@ Rectangle {
             anchors.topMargin: 585
             anchors.bottomMargin: 85
             onClicked: {
-                mainObject.CreateAccount(createAccountUsername.text, createAccountPassword.text)
+                mainObject.CreateAccount(createAccountUsername.text,
+                                         createAccountPassword.text)
             }
         }
 
@@ -191,9 +192,240 @@ Rectangle {
         }
     }
 
-    states: [
-        State {
-            name: "clicked"
+    Rectangle {
+        id: background
+        objectName: "background"
+        color: "#7b7b7b"
+        radius: 20
+        visible: false
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 231
+        anchors.rightMargin: 51
+        anchors.topMargin: 190
+        anchors.bottomMargin: 59
+
+        Grid {
+            id: resterantsGrid
+            objectName : "resterantsGrid"
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 44
+            anchors.rightMargin: 40
+            anchors.topMargin: 28
+            anchors.bottomMargin: 24
         }
-    ]
+    }
+
+    Rectangle {
+        id: deliverysButtonBackground
+        objectName: "deliverysButtonBackground"
+        opacity: 0.2
+        color: "#7b7b7b"
+        radius: 20
+        visible: false
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 17
+        anchors.rightMargin: 1708
+        anchors.topMargin: 423
+        anchors.bottomMargin: 568
+        Button {
+            id: deliverysButton
+            objectName : "deliverysButton"
+            text: qsTr("Deliverys")
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            font.pointSize: 21
+            flat: true
+        }
+    }
+
+    Rectangle {
+        id: signoutButtonBackground
+        objectName: "signoutButtonBackground"
+        opacity: 0.2
+        color: "#7b7b7b"
+        radius: 40
+        visible: false
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 17
+        anchors.rightMargin: 1708
+        anchors.topMargin: 856
+        anchors.bottomMargin: 135
+        Button {
+            id: signoutButton
+            objectName : "signoutButton"
+            text: qsTr("Sign Out")
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            font.pointSize: 21
+            flat: true
+        }
+    }
+
+    Rectangle {
+        id: cartButtonBackground
+        objectName: "cartButtonBackground"
+        opacity: 0.2
+        color: "#7b7b7b"
+        radius: 20
+        visible: false
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 17
+        anchors.rightMargin: 1708
+        anchors.topMargin: 576
+        anchors.bottomMargin: 415
+        Button {
+            id: cartButton
+            objectName : "cartButton"
+            text: qsTr("Cart")
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            font.pointSize: 21
+            flat: true
+        }
+    }
+
+    Rectangle {
+        id: homeButtonBackground
+        objectName: "homeButtonBackground"
+        opacity: 0.2
+        color: "#7b7b7b"
+        radius: 40
+        visible: false
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 17
+        anchors.rightMargin: 1708
+        anchors.topMargin: 54
+        anchors.bottomMargin: 937
+
+        Button {
+            id: homeButton
+            objectName : "homeButton"
+            text: qsTr("Home")
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            font.pointSize: 21
+            flat: true
+        }
+    }
+
+    Rectangle {
+        id: ordersButtonBackground
+        objectName: "ordersButtonBackground"
+        opacity: 0.2
+        color: "#7b7b7b"
+        radius: 20
+        visible: false
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 17
+        anchors.rightMargin: 1708
+        anchors.topMargin: 262
+        anchors.bottomMargin: 729
+        Button {
+            id: ordersButton
+            objectName : "ordersButton"
+            text: qsTr("Orders")
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            font.pointSize: 21
+            flat: true
+        }
+    }
+
+    Rectangle {
+        id: searchBarBackground
+        objectName: "searchBarBackground"
+        opacity: 0.2
+        color: "#7b7b7b"
+        radius: 50
+        visible: false
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 578
+        anchors.rightMargin: 473
+        anchors.topMargin: 74
+        anchors.bottomMargin: 917
+
+        TextField {
+            id: searchBar
+            objectName : "searchBar"
+            color: "#fffbfb"
+            text: qsTr("")
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 8
+            anchors.rightMargin: 8
+            anchors.topMargin: 0
+            anchors.bottomMargin: 8
+            font.pointSize: 25
+            placeholderTextColor: "#92ffffff"
+            placeholderText: "Search..."
+        }
+    }
+
+    Item {
+        id: __materialLibrary__
+    }
 }
+
+/*##^##
+Designer {
+    D{i:12;invisible:true}D{i:14;invisible:true}D{i:16;invisible:true}D{i:18;invisible:true}
+D{i:20;invisible:true}D{i:22;invisible:true}D{i:24;invisible:true}
+}
+##^##*/
+

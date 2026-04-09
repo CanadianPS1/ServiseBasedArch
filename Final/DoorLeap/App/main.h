@@ -7,6 +7,13 @@ class Main : public QObject{
     public:
     struct QtItems{
         QObject* loginMenu;
+        QObject* signoutButtonBackground;
+        QObject* homeButtonBackground;
+        QObject* ordersButtonBackground;
+        QObject* deliverysButtonBackground;
+        QObject* cartButtonBackground;
+        QObject* searchBarBackground;
+        QObject* background;
     };
     static QtItems items;
     explicit Main(QObject *parent = nullptr);

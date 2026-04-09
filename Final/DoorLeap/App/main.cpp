@@ -34,6 +34,13 @@ int main(int argc, char *argv[]){
     QObject* rootObject = engine.rootObjects().first();
     if(engine.rootObjects().isEmpty()) return -1;
     Main::items.loginMenu = rootObject->findChild<QObject*>("signIn");
+    Main::items.signoutButtonBackground = rootObject->findChild<QObject*>("signoutButtonBackground");
+    Main::items.homeButtonBackground = rootObject->findChild<QObject*>("homeButtonBackground");
+    Main::items.ordersButtonBackground = rootObject->findChild<QObject*>("ordersButtonBackground");
+    Main::items.deliverysButtonBackground = rootObject->findChild<QObject*>("deliverysButtonBackground");
+    Main::items.cartButtonBackground = rootObject->findChild<QObject*>("cartButtonBackground");
+    Main::items.searchBarBackground = rootObject->findChild<QObject*>("searchBarBackground");
+    Main::items.background = rootObject->findChild<QObject*>("background");
     return app.exec();
 }
 Main::Main(QObject *parent) : QObject(parent) {}
@@ -96,9 +103,32 @@ void Main::ProduceMessage(const std::string& message, const char* topic){
 void Main::HandleLogInResponse(std::string type, std::string success, std::string message, std::string username, std::string authToken){
     if(success.compare("true") == 0){
         std::cerr<<"login being handled"<<std::endl;
-        if(Main::items.loginMenu){
+        if(Main::items.loginMenu && Main::items.signoutButtonBackground && Main::items.homeButtonBackground &&
+        Main::items.ordersButtonBackground && Main::items.cartButtonBackground && Main::items.deliverysButtonBackground &&
+        Main::items.searchBarBackground && Main::items.background){
             Main::items.loginMenu->setProperty("visible", false);
             Main::items.loginMenu->setProperty("enabled", false);
+
+            Main::items.signoutButtonBackground->setProperty("visible", true);
+            Main::items.signoutButtonBackground->setProperty("enabled", true);
+
+            Main::items.homeButtonBackground->setProperty("visible", true);
+            Main::items.homeButtonBackground->setProperty("enabled", true);
+
+            Main::items.ordersButtonBackground->setProperty("visible", true);
+            Main::items.ordersButtonBackground->setProperty("enabled", true);
+
+            Main::items.cartButtonBackground->setProperty("visible", true);
+            Main::items.cartButtonBackground->setProperty("enabled", true);
+
+            Main::items.deliverysButtonBackground->setProperty("visible", true);
+            Main::items.deliverysButtonBackground->setProperty("enabled", true);
+
+            Main::items.searchBarBackground->setProperty("visible", true);
+            Main::items.searchBarBackground->setProperty("enabled", true);
+
+            Main::items.background->setProperty("visible", true);
+            Main::items.background->setProperty("enabled", true);
         }else std::cerr<<"login menu not found!!!!!"<<std::endl;
     }
 }
