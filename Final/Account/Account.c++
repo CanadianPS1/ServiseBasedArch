@@ -85,7 +85,6 @@ void Account::Login(nlohmann::json messageJson, MYSQL* connection){
     if(row){
         std::string dbPassword = row[1];
         if(dbPassword == password){
-            std::cout<<"password "<<password<<" is "<<dbPassword<<std::endl;
             std::cout << "User logged in!" << std::endl;
             nlohmann::json packet = {
                 {"type", "login"},

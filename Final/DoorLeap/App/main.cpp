@@ -129,6 +129,12 @@ void Main::HandleLogInResponse(std::string type, std::string success, std::strin
 
             Main::items.background->setProperty("visible", true);
             Main::items.background->setProperty("enabled", true);
+            nlohmann::json messageJson = {
+                {"type", "collect"},
+                {"amount", "all"}
+            };
+            std::string message = messageJson.dump();
+            ProduceMessage(message, "resterant");
         }else std::cerr<<"login menu not found!!!!!"<<std::endl;
     }
 }

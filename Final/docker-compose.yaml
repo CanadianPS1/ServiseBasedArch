@@ -92,6 +92,15 @@ services:
       - kafka
     networks:
       - localprom
+  resterants:
+    container_name: resterants
+    build:
+      context: ./Resterants
+      dockerfile: Dockerfile
+    depends_on:
+      - kafka
+    networks:
+      - localprom
 networks:
   localprom:
     driver: bridge
