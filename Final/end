@@ -1,0 +1,23 @@
+[0;1;32m●[0m docker.service - Docker Application Container Engine
+     Loaded: loaded (]8;;file://Epic-Computer8/usr/lib/systemd/system/docker.service\/usr/lib/systemd/system/docker.service]8;;\; [0;1;32menabled[0m; preset: [0;1;38:5:185mdisabled[0m)
+     Active: [0;1;32mactive (running)[0m since Fri 2026-04-10 21:47:20 MDT; 21s ago
+ Invocation: 7f0a1e258ac8408ba64f7dc2e0e4b0a0
+TriggeredBy: [0;1;32m●[0m docker.socket
+       Docs: ]8;;https://docs.docker.com\https://docs.docker.com]8;;\
+   Main PID: 30233 (dockerd)
+      Tasks: 17
+     Memory: 111.7M (peak: 120.4M)
+        CPU: 355ms
+     CGroup: /system.slice/docker.service
+             └─[0;38:5:245m30233 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock[0m
+
+Apr 10 21:47:20 Epic-Computer8 dockerd[30233]: time="2026-04-10T21:47:20.358315527-06:00" level=info msg="Restoring containers: start."
+Apr 10 21:47:20 Epic-Computer8 dockerd[30233]: time="2026-04-10T21:47:20.386178836-06:00" level=info msg="Deleting nftables IPv4 rules" error="exit status 1" output="Error: Could not process rule: No such file or directory\ndelete table ip docker-bridges"
+Apr 10 21:47:20 Epic-Computer8 dockerd[30233]: time="2026-04-10T21:47:20.400233867-06:00" level=info msg="Deleting nftables IPv6 rules" error="exit status 1" output="Error: Could not process rule: No such file or directory\ndelete table ip6 docker-bridges"
+Apr 10 21:47:20 Epic-Computer8 dockerd[30233]: time="2026-04-10T21:47:20.783854458-06:00" level=info msg="Loading containers: done."
+Apr 10 21:47:20 Epic-Computer8 dockerd[30233]: time="2026-04-10T21:47:20.788468313-06:00" level=info msg="Docker daemon" commit=daa0cb7f23 containerd-snapshotter=true storage-driver=overlayfs version=29.4.0
+Apr 10 21:47:20 Epic-Computer8 dockerd[30233]: time="2026-04-10T21:47:20.788519425-06:00" level=info msg="Initializing buildkit"
+Apr 10 21:47:20 Epic-Computer8 dockerd[30233]: time="2026-04-10T21:47:20.800530215-06:00" level=info msg="Completed buildkit initialization"
+Apr 10 21:47:20 Epic-Computer8 dockerd[30233]: time="2026-04-10T21:47:20.804913143-06:00" level=info msg="Daemon has completed initialization"
+Apr 10 21:47:20 Epic-Computer8 dockerd[30233]: time="2026-04-10T21:47:20.804952404-06:00" level=info msg="API listen on /run/docker.sock"
+Apr 10 21:47:20 Epic-Computer8 systemd[1]: Started Docker Application Container Engine.

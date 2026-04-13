@@ -71,7 +71,7 @@ services:
       context: ./DoorLeap
       dockerfile: Dockerfile
     environment:
-      - DISPLAY=host.docker.internal:0
+      - DISPLAY=${DISPLAY}
       - QT_QPA_PLATFORM=xcb
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
@@ -89,6 +89,15 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - mariadb
+      - kafka
+    networks:
+      - localprom
+  resterants:
+    container_name: resterants
+    build:
+      context: ./Resterants
+      dockerfile: Dockerfile
+    depends_on:
       - kafka
     networks:
       - localprom

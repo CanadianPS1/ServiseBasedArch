@@ -85,7 +85,6 @@ void Account::Login(nlohmann::json messageJson, MYSQL* connection){
     if(row){
         std::string dbPassword = row[1];
         if(dbPassword == password){
-            std::cout<<"password "<<password<<" is "<<dbPassword<<std::endl;
             std::cout << "User logged in!" << std::endl;
             nlohmann::json packet = {
                 {"type", "login"},
@@ -161,7 +160,8 @@ void Account::Create(nlohmann::json messageJson, MYSQL* connection){
     MYSQL_ROW row;
     if(mysql_fetch_row(result) == 0){
         std::string password = messageJson.at("password");
-        std::string query = "INSERT INTO users (username, password) VALUES ('" + username + "', '" + password + "')";
+        //TODO add the email to the GUI
+        std::string query = "INSERT INTO users (username, password, email) VALUES ('" + username + "', '" + password + "', 'grok@gmail.beans')";
         if(mysql_query(connection, query.c_str())){
             std::cerr<<"Insert failed: "<<mysql_error(connection)<<std::endl;
             nlohmann::json packet = {

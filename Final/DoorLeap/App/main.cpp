@@ -102,7 +102,6 @@ void Main::ProduceMessage(const std::string& message, const char* topic){
 }
 void Main::HandleLogInResponse(std::string type, std::string success, std::string message, std::string username, std::string authToken){
     if(success.compare("true") == 0){
-        std::cerr<<"login being handled"<<std::endl;
         if(Main::items.loginMenu && Main::items.signoutButtonBackground && Main::items.homeButtonBackground &&
         Main::items.ordersButtonBackground && Main::items.cartButtonBackground && Main::items.deliverysButtonBackground &&
         Main::items.searchBarBackground && Main::items.background){
@@ -129,6 +128,15 @@ void Main::HandleLogInResponse(std::string type, std::string success, std::strin
 
             Main::items.background->setProperty("visible", true);
             Main::items.background->setProperty("enabled", true);
+            nlohmann::json messageJson = {
+                {"type", "collect"},
+                {"amount", "all"}
+            };
+            std::string message = messageJson.dump();
+            ProduceMessage(message, "resterant");
         }else std::cerr<<"login menu not found!!!!!"<<std::endl;
     }
+}
+void Main::HandleGetResterantResponse(std::string items, std::string type, std::string success){
+    std::cerr<<items<<std::endl;
 }

@@ -4,6 +4,7 @@
 #include <QDebug>
 #include "nlohmann/json.hpp"
 #include "main.h"
+#include <iostream>
 HttpServer::HttpServer(QObject* parent) : QObject(parent){
     server_ = new QTcpServer(this);
     connect(server_, &QTcpServer::newConnection, this, &HttpServer::handleConnection);
@@ -35,6 +36,23 @@ void HttpServer::handleConnection(){
             };
             responseBody = QByteArray::fromStdString(responseJson.dump());
             Main::HandleLogInResponse(type, success, message, username, authToken);
+        }else if(method == "POST" && path == "/resterants"){
+            int headerEnd = request.indexOf("\r\n\r\n");
+            if(headerEnd == -1) return;
+            QByteArray body = request.mid(headerEnd + 4);
+            if(body.isEmpty()) return;
+            std::string bodyStr = body.toStdString();
+            nlohmann::json requestJson;
+            try{requestJson = nlohmann::json::parse(bodyStr);}
+            catch(const std::exception& e){return;}
+            std::string type = requestJson["type"];
+            std::string success = requestJson["success"];
+            std::string items = requestJson["items"];
+            nlohmann::json responseJson = {
+                {"status", "did it big"}
+            };
+            responseBody = QByteArray::fromStdString(responseJson.dump());
+            Main::HandleGetResterantResponse(items, type, success);
         }else{
             nlohmann::json err = {
                 {"error","endpoint not found"}
