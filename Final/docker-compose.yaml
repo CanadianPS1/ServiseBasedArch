@@ -49,6 +49,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG4J_OPTS: "-Dlog4j.rootLogger=ERROR,stdout"
     networks:
       - localprom
     healthcheck:

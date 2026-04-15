@@ -138,5 +138,15 @@ void Main::HandleLogInResponse(std::string type, std::string success, std::strin
     }
 }
 void Main::HandleGetResterantResponse(std::string items, std::string type, std::string success){
-    std::cerr<<items<<std::endl;
+    std::cerr<<"entered"<<std::endl;
+    //std::cerr<<items<<std::endl;
+    //if(success.compare("true") == 0){
+        nlohmann::json resterants = items;
+        int count = 0;
+        for(auto i = resterants.begin(); i != resterants.end(); ++i){
+            //std::cerr<<i.key()<<std::endl;
+            std::cerr<<count<<std::endl;
+            count++;
+        }
+    //}
 }
