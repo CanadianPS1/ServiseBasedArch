@@ -83,5 +83,5 @@ RUN g++ -std=c++20 \
     -lmongocxx \
     -lbsoncxx \
     -o Resterant
-EXPOSE 9092
+EXPOSE 9259
 CMD ["./Resterant"]

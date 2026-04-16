@@ -44,5 +44,5 @@ RUN g++ -std=c++20 \
     -lrdkafka \
     -lcrypto \
     -o Account
-EXPOSE 9092
+EXPOSE 9257
 CMD ["./Account"]

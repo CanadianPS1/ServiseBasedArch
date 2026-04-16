@@ -42,5 +42,5 @@ RUN g++ -std=c++20 \
     -lpthread \
     -lrdkafka \
     -o Basket
-EXPOSE 9092
+EXPOSE 9256
 CMD ["./Basket"]

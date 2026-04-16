@@ -26,9 +26,9 @@ http::response<http::string_body> handle_request(http::request<http::string_body
         std::string target = std::string(req.target());
         target = target.substr(0, target.find('?'));
         if(!target.empty() && target.back() == '/') target.pop_back();
-        int userId = std::stoi(target.substr(target.find_last_of('/') + 1));
+        std::string userId = target.substr(target.find_last_of('/') + 1);
         nlohmann::json json_response = {{"message", Basket::GetBasketById(userId)},
-                                        {"URL", "http://www.localhost:9256/games/trade/"}};
+                                        {"URL", "http://www.localhost:9256/basket/"}};
         http::response<http::string_body> res{http::status::ok, req.version()};
 
         res.set(http::field::server, "Beast");
@@ -40,7 +40,9 @@ http::response<http::string_body> handle_request(http::request<http::string_body
         return res;
     //get all
     }else if(req.method() == http::verb::get && req.target() == "/basket"){
+        std::cout<<"reseved the request to get all items"<<std::endl;
         auto basket = Basket::GetBasket();
+        std::cout<<"got all the items"<<std::endl;
         for(auto it = basket.begin(); it != basket.end(); ++it){
             auto id = it.key();
             auto& basket = it.value();
@@ -54,16 +56,17 @@ http::response<http::string_body> handle_request(http::request<http::string_body
         //the response back
         res.body() = json_response.dump();
         res.prepare_payload();
+        std::cout<<"sending back all the items"<<std::endl;
         return res;
     //for delete by id
     }else if(req.method() == http::verb::delete_ && req.target().starts_with("/basket/")){
         std::string target = std::string(req.target());
         target = target.substr(0, target.find('?'));
         if(!target.empty() && target.back() == '/') target.pop_back();
-        int id = std::stoi(target.substr(target.find_last_of('/') + 1));
+        std::string id = target.substr(target.find_last_of('/') + 1);
         Basket::DeleteItem(id);
         nlohmann::json json_response = {{"message", "Item deleted"},
-                                        {"URL", "http://www.localhost:9256/basket/" + std::to_string(id)}};
+                                        {"URL", "http://www.localhost:9256/basket/" + id}};
         http::response<http::string_body> res{http::status::ok, req.version()};
         res.set(http::field::server, "Beast");
         res.set(http::field::content_type, "application/json");
@@ -139,6 +142,7 @@ class Listener : public std::enable_shared_from_this<Listener>{
                 std::cerr << "Listening Error: " << ec.message() << std::endl;
                 return;
             }
+            std::cout<<"accept loop started"<<std::endl;
             do_accept();
         }
     private:
@@ -151,13 +155,15 @@ class Listener : public std::enable_shared_from_this<Listener>{
 };
 int main(){
     try{
-        Basket basket;
         auto const address = net::ip::make_address("0.0.0.0");
         unsigned short port = 9256;
         net::io_context ioc{1};
         auto listener = std::make_shared<Listener>(ioc,tcp::endpoint{address,port});
+        std::cout<<"Server running on 9256"<<std::endl;
+        Basket basket;
         ioc.run();
+        std::cerr<<"ioc loop exited"<<std::endl;
     }catch(const std::exception& e){
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr<<"Error: "<<e.what()<<std::endl;
     }
 }

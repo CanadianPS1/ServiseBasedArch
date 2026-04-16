@@ -64,7 +64,7 @@ void HttpServer::handleConnection(){
             responseBody = QByteArray::fromStdString(responseJson.dump()); 
             std::cerr<<"bruh"<<std::endl; 
             Main::HandleGetResterantResponse(items, type, success);
-        else{
+        }else{
             nlohmann::json err = {
                 {"error","endpoint not found"}
             };

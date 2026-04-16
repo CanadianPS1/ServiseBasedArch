@@ -7,9 +7,9 @@ class Basket{
     static int id;
     static redisContext* RedisConnect();
     static void KafkaConnect();
-    static void AddToBasket(std::string msg);
-    static nlohmann::json GetBasketById(int id);
+    static void AddToBasket(std::string item, int cost);
+    static nlohmann::json GetBasketById(std::string name);
     static nlohmann::json GetBasket();
-    static void DeleteItem(int id);
+    static void DeleteItem(std::string name);
     static void DeleteAllItems();
 };
