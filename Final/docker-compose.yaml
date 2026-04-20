@@ -68,6 +68,17 @@ services:
       - kafka
     networks:
       - localprom
+  order:
+    container_name: order
+    build:
+      context: ./Orders
+      dockerfile: Dockerfile
+    ports:
+      - "9257:9257"
+    depends_on:
+      - kafka
+    networks:
+      - localprom
   doorleap:
     container_name: doorleap
     build:
