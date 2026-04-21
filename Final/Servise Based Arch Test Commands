@@ -1,0 +1,60 @@
+Servise Based Arch Test Commands
+
+~JSON~
+
+{"type":"update"}
+
+{"type":"add","item":"Bannana","cost":10}
+
+{"type":"get","item":"null"}
+
+~Commands~
+
+BASH
+
+docker exec -it kafka bash
+
+
+CART
+
+DELETE
+
+kafka-topics --bootstrap-server localhost:9092 \
+  --delete --topic cart
+
+
+CREATE
+
+kafka-topics --bootstrap-server localhost:9092 \
+  --create --cart \
+  --partitions 1 \
+  --replication-factor 1
+
+CART PROCUCER
+
+docker exec -it kafka kafka-console-producer \
+  --bootstrap-server localhost:9092 \
+  --topic cart
+
+
+CARD CONSUMER
+
+docker exec -it kafka kafka-console-consumer \
+  --bootstrap-server localhost:9092 \
+  --topic cart \
+  --from-beginning
+
+
+ORDERS PROCUCER
+
+docker exec -it kafka kafka-console-producer \
+  --bootstrap-server localhost:9092 \
+  --topic orders
+
+
+ORDERS CONSUMER
+
+docker exec -it kafka kafka-console-consumer \
+  --bootstrap-server localhost:9092 \
+  --topic orders \
+  --from-beginning
