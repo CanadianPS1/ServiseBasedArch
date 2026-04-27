@@ -1,7 +1,11 @@
 #include "HttpServer.h"
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDebug>
+#include <QUrl>
 #include "nlohmann/json.hpp"
 #include "main.h"
 #include <iostream>
@@ -10,6 +14,24 @@ HttpServer::HttpServer(QObject* parent) : QObject(parent){
     connect(server_, &QTcpServer::newConnection, this, &HttpServer::handleConnection);
     if(!server_->listen(QHostAddress::Any, 9258)) qDebug()<<"Server failed to start!";
     else qDebug()<<"Server listening on port 9258";
+    Register("doorleap-service", "doorleap-1", "doorleap", 9258);
+}
+void HttpServer::Register(const QString& name, const QString& id, const QString& address, int port){
+    QNetworkAccessManager* manager = new QNetworkAccessManager();
+    QUrl url("http://consul:8500/v1/agent/service/register");
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QJsonObject check;
+    check["HTTP"] = QString("http://%1:%2/health").arg(address).arg(port);
+    check["Interval"] = "10s";
+    QJsonObject json;
+    json["Name"] = name;
+    json["ID"] = id;
+    json["Address"] = address;
+    json["Port"] = port;
+    json["Check"] = check;
+    QJsonDocument doc(json);
+    manager->put(request, doc.toJson());
 }
 void HttpServer::handleConnection(){
     QTcpSocket* socket = server_->nextPendingConnection();
@@ -23,6 +45,13 @@ void HttpServer::handleConnection(){
         QByteArray method = parts[0];
         QByteArray path   = parts[1];
         QByteArray responseBody;
+        if(method == "GET" && path == "/health"){
+             nlohmann::json responseJson = {
+                {"status", "ok"},
+                {"service", "doorleap"}
+            };
+            responseBody = QByteArray::fromStdString(responseJson.dump());
+        }
         if(method == "POST" && path == "/logins"){
             QByteArray body = request.mid(request.indexOf("\r\n\r\n") + 4);
             nlohmann::json requestJson = nlohmann::json::parse(body.toStdString());

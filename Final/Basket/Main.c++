@@ -20,8 +20,43 @@ namespace net = boost::asio;
 using tcp = net::ip::tcp;
 using std::vector;
 using std::find;
+void Register(const std::string& name, const std::string& id, const std::string& address, int port){
+    net::io_context ioc;
+    tcp::resolver resolver(ioc);
+    beast::tcp_stream stream(ioc);
+    auto const results = resolver.resolve("consul", "8500");
+    stream.connect(results);
+    std::string body = "{"
+        "\"Name\":\"" + name + "\","
+        "\"ID\":\"" + id + "\","
+        "\"Address\":\"" + address + "\","
+        "\"Port\":" + std::to_string(port) + ","
+        "\"Check\":{"
+            "\"HTTP\":\"http://" + address + ":" + std::to_string(port) + "/health\","
+            "\"Interval\":\"10s\""
+        "}"
+    "}";
+    http::request<http::string_body> req{http::verb::put, "/v1/agent/service/register", 11};
+    req.set(http::field::host, "consul");
+    req.set(http::field::content_type, "application/json");
+    req.body() = body;
+    req.prepare_payload();
+    http::write(stream, req);
+    beast::flat_buffer buffer;
+    http::response<http::string_body> res;
+    http::read(stream, buffer, res);
+    stream.socket().shutdown(tcp::socket::shutdown_both);
+}
 http::response<http::string_body> handle_request(http::request<http::string_body> const& req){
     //get by id
+    if(req.target() == "/health") {
+        http::response<http::string_body> res{http::status::ok, req.version()};
+        res.set(http::field::content_type, "text/plain");
+        res.result(http::status::ok);
+        res.body() = "OK";
+        res.prepare_payload();
+        return res;
+    }
     if(req.method() == http::verb::get && req.target().starts_with("/basket/")){
         std::string target = std::string(req.target());
         target = target.substr(0, target.find('?'));
@@ -161,6 +196,7 @@ int main(){
         auto listener = std::make_shared<Listener>(ioc,tcp::endpoint{address,port});
         std::cout<<"Server running on 9256"<<std::endl;
         Basket basket;
+        Register("basket-service", "basket-1", "basket", 9256);
         ioc.run();
         std::cerr<<"ioc loop exited"<<std::endl;
     }catch(const std::exception& e){

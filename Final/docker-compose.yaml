@@ -115,6 +115,15 @@ services:
       - kafka
     networks:
       - localprom
+  consul:
+    image: consul:1.15
+    container_name: consul
+    command: agent -dev -client=0.0.0.0
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    networks:
+      - localprom
 networks:
   localprom:
     driver: bridge
